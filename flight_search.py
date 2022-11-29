@@ -1,6 +1,5 @@
 import datetime
 import datetime as dt
-import json
 from data_manager import DataManager
 import requests
 API_KEY = 'QldAgAPgeseNp1w1NXGMc5ybEodWgQ-q'
@@ -52,6 +51,21 @@ class FlightSearch:
                            'location_types': 'city'}
         response = requests.get(url=location_endpoint, params=location_config, headers=headers)
         return response.json()['locations'][0]['code']
+    def get_average_price(self,from_location,to_location,time):
+        headers = {'apikey': API_KEY}
+        search_endpoint = 'https://tequila-api.kiwi.com/v2/min-price'
+        flight_config = {'fly_from': from_location,
+                         'fly_to': to_location,
+                         'date': time,
+                         'nights_in_dst_from': '7',
+                         'nights_in_dst_to': '28',
+                         'flight_type': 'round',
+                         'max_stopovers': '0',
+                         'limit': '1',
+                         'curr': 'INR'
+                        }
+        response = requests.get(url=search_endpoint, params=flight_config, headers=headers)
+        return response.json()[0]
 
     def get_min_price(self,from_location,to_location):
         headers = {'apikey': API_KEY}
